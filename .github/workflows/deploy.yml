@@ -1,0 +1,35 @@
+name: Publish Mini DAYZ
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download files
+        uses: actions/checkout@v4
+
+      - name: Unpack game
+        run: |
+          mkdir public
+          unzip -q MiniDAYZ_iOS_playable_web.zip -d public
+          touch public/.nojekyll
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload game
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: public
+
+      - name: Publish game
+        uses: actions/deploy-pages@v4
